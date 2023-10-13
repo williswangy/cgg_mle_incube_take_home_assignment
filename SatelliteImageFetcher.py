@@ -8,6 +8,7 @@ from pystac.extensions.eo import EOExtension as eo
 import json
 import numpy as np
 import os
+import datetime
 
 
 logging.basicConfig(level=logging.INFO)
@@ -97,7 +98,7 @@ def read_image_from_asset(asset_href, aoi):
 
 def save_image(img, item_details, save_folder='saved_images'):
     """
-    Saves the provided image in the specified folder with a name based on item details.
+    Saves the provided image in the specified folder with a unique name based on item details.
 
     Args:
         img (PIL.Image): Image to be saved.
@@ -111,8 +112,9 @@ def save_image(img, item_details, save_folder='saved_images'):
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
 
-    # Generate an image name based on item ID and date
-    img_name = f"{item_details['id']}.png"
+    # Generate a unique image name based on item ID, date, and current timestamp
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
+    img_name = f"{item_details['id']}_{timestamp}.png"
     img_path = os.path.join(save_folder, img_name)
 
     img.save(img_path, 'PNG')
@@ -121,20 +123,64 @@ def save_image(img, item_details, save_folder='saved_images'):
     return img_path
 
 
-if __name__ == "__main__":
-    AREA_OF_INTEREST = {
-        "type": "Polygon",
-        "coordinates": [
-            [
-                [-148.56536865234375, 60.80072385643073],
-                [-147.44338989257812, 60.80072385643073],
-                [-147.44338989257812, 61.18363894915102],
-                [-148.56536865234375, 61.18363894915102],
-                [-148.56536865234375, 60.80072385643073],
-            ]
-        ],
-    }
+def fetch_images_from_geojson(file_path, save_folder='saved_images'):
+    """
+    Process a GeoJSON file with AOIs and fetch satellite images for each.
 
-    asset_href, item_details = fetch_least_cloudy_image(AREA_OF_INTEREST)
-    img = read_image_from_asset(asset_href, AREA_OF_INTEREST)
-    save_image(img, item_details)
+    Args:
+        file_path (str): Path to the GeoJSON file.
+        save_folder (str): Folder to save the fetched images.
+
+    Returns:
+        list: List of paths where images were saved.
+    """
+    # Read the GeoJSON file
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    saved_paths = []
+
+    for feature in data["features"]:
+        geom = feature["geometry"]
+        label = feature["properties"].get('label')  # assuming 'label' is the property name for labels
+
+        logger.info(f"Processing AOI with label: {label}")
+
+        try:
+            asset_href, item_details = fetch_least_cloudy_image(geom)
+            if asset_href and item_details:  # Check if values are not None
+                img = read_image_from_asset(asset_href, geom)
+                saved_path = save_image(img, item_details, save_folder=save_folder)
+                saved_paths.append(saved_path)
+            else:
+                logger.warning(f"No suitable image found for AOI with label: {label}")
+        except Exception as e:
+            logger.error(f"Error processing AOI with label: {label}. Error: {str(e)}")
+
+    return saved_paths
+
+
+
+
+if __name__ == "__main__":
+    # AREA_OF_INTEREST = {
+    #     "type": "Polygon",
+    #     "coordinates": [
+    #         [
+    #             [-148.56536865234375, 60.80072385643073],
+    #             [-147.44338989257812, 60.80072385643073],
+    #             [-147.44338989257812, 61.18363894915102],
+    #             [-148.56536865234375, 61.18363894915102],
+    #             [-148.56536865234375, 60.80072385643073],
+    #         ]
+    #     ],
+    # }
+    #
+    # asset_href, item_details = fetch_least_cloudy_image(AREA_OF_INTEREST)
+    # img = read_image_from_asset(asset_href, AREA_OF_INTEREST)
+    # save_image(img, item_details)
+
+    train_images = fetch_images_from_geojson('raw_data/train.geojson', save_folder='train_images')
+
+    # Processing test.geojson
+    test_images = fetch_images_from_geojson('raw_data/test.geojson', save_folder='test_images')
