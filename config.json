@@ -1,0 +1,6 @@
+{
+    "STAC_URL": "https://planetarycomputer.microsoft.com/api/stac/v1",
+    "COLLECTION_NAME": "sentinel-2-l2a",
+    "TIME_OF_INTEREST": "2019-06-01/2019-08-01",
+    "TARGET_WIDTH": 800
+}
