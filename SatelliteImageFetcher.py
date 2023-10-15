@@ -10,7 +10,6 @@ import numpy as np
 import os
 import datetime
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,8 @@ STAC_URL = config['STAC_URL']
 COLLECTION_NAME = config['COLLECTION_NAME']
 TIME_OF_INTEREST = config['TIME_OF_INTEREST']
 TARGET_WIDTH = config['TARGET_WIDTH']
-
+TRAIN_GEOJSON_PATH = config['TRAIN_GEOJSON_PATH']
+TEST_GEOJSON_PATH = config['TEST_GEOJSON_PATH']
 
 
 def fetch_least_cloudy_image(aoi, time_of_interest=TIME_OF_INTEREST):
@@ -29,11 +29,12 @@ def fetch_least_cloudy_image(aoi, time_of_interest=TIME_OF_INTEREST):
     Fetches the asset href and details of the least cloudy image for a specified area of interest (AOI) within a given time frame.
 
     Args:
-        aoi (dict): The area of interest, typically a Polygon in GeoJSON format.
-        time_of_interest (str): Time frame in ISO format. Defaults to `TIME_OF_INTEREST` from config.
+        - aoi (dict): The area of interest, typically a Polygon in GeoJSON format.
+        - time_of_interest (str): Time frame in ISO format. Defaults to `TIME_OF_INTEREST` from config.
 
     Returns:
-        tuple: A tuple containing the href link to the asset and the dictionary with item details.
+        - List[Tuple[str, dict]]: A list of tuples where each tuple contains the href link to the
+        asset and the dictionary with item details.
     """
 
     catalog = pystac_client.Client.open(STAC_URL, modifier=planetary_computer.sign_inplace)
@@ -62,11 +63,11 @@ def read_image_from_asset(asset_href, aoi):
     Reads and returns a resized image from a given asset href for the specified area of interest (AOI).
 
     Args:
-        asset_href (str): The href link to the asset.
-        aoi (dict): The area of interest, typically a Polygon in GeoJSON format.
+        - asset_href (str): The href link to the asset.
+        - aoi (dict): The area of interest, typically a Polygon in GeoJSON format.
 
     Returns:
-        PIL.Image: The resized image of the AOI from the asset.
+        - PIL.Image: The resized image of the AOI from the asset.
     """
 
     logger.info(f"Opening asset: {asset_href}")
@@ -101,10 +102,10 @@ def save_image(img, item_details, label, save_folder='saved_images'):
     Saves the provided image in the specified folder with a unique name based on item details and label.
 
     Args:
-        img (PIL.Image): Image to be saved.
-        item_details (dict): Dictionary with details of the satellite image.
-        label (int): Label of the feature (1 or 0).
-        save_folder (str): Folder to save the image in.
+        - img (PIL.Image): Image to be saved.
+        - item_details (dict): Dictionary with details of the satellite image.
+        - label (int): Label of the feature (1 or 0).
+        - save_folder (str): Folder to save the image in.
 
     Returns:
         str: Path where the image was saved.
@@ -126,13 +127,14 @@ def save_image(img, item_details, label, save_folder='saved_images'):
     logger.info(f"Image saved at: {img_path}")
     return img_path
 
+
 def fetch_images_from_geojson(file_path, save_folder='saved_images'):
     """
     Process a GeoJSON file with AOIs and fetch satellite images for each.
 
     Args:
-        file_path (str): Path to the GeoJSON file.
-        save_folder (str): Folder to save the fetched images.
+        - file_path (str): Path to the GeoJSON file.
+        - save_folder (str): Folder to save the fetched images.
 
     Returns:
         list: List of paths where images were saved.
@@ -163,12 +165,15 @@ def fetch_images_from_geojson(file_path, save_folder='saved_images'):
     return saved_paths
 
 
-
-
 if __name__ == "__main__":
+    logging.info("Starting geojson processing...")
 
-
-    train_images = fetch_images_from_geojson('raw_data/train.geojson', save_folder='train_images')
+    # Processing train.geojson
+    train_images = fetch_images_from_geojson(TRAIN_GEOJSON_PATH, save_folder='train_images')
+    logging.info(f"Processed {len(train_images)} images from {TRAIN_GEOJSON_PATH}.")
 
     # Processing test.geojson
-    test_images = fetch_images_from_geojson('raw_data/test.geojson', save_folder='test_images')
+    test_images = fetch_images_from_geojson(TEST_GEOJSON_PATH, save_folder='test_images')
+    logging.info(f"Processed {len(test_images)} images from {TEST_GEOJSON_PATH}.")
+
+    logging.info("Geojson processing completed.")

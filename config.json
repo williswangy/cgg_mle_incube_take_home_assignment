@@ -2,5 +2,10 @@
     "STAC_URL": "https://planetarycomputer.microsoft.com/api/stac/v1",
     "COLLECTION_NAME": "sentinel-2-l2a",
     "TIME_OF_INTEREST": "2022-01-01/2022-12-30",
-    "TARGET_WIDTH": 800
+    "TARGET_WIDTH": 800,
+    "TRAIN_GEOJSON_PATH": "raw_data/train.geojson",
+    "TEST_GEOJSON_PATH": "raw_data/test.geojson",
+    "TRAIN_IMAGE_PATH": "train_images",
+    "TEST_IMAGE_PATH": "test_images",
+    "SIZE": [256, 256]
 }
