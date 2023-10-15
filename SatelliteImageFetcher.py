@@ -96,32 +96,35 @@ def read_image_from_asset(asset_href, aoi):
     return img.resize((target_w, target_h), Image.Resampling.BILINEAR)
 
 
-def save_image(img, item_details, save_folder='saved_images'):
+def save_image(img, item_details, label, save_folder='saved_images'):
     """
-    Saves the provided image in the specified folder with a unique name based on item details.
+    Saves the provided image in the specified folder with a unique name based on item details and label.
 
     Args:
         img (PIL.Image): Image to be saved.
         item_details (dict): Dictionary with details of the satellite image.
+        label (int): Label of the feature (1 or 0).
         save_folder (str): Folder to save the image in.
 
     Returns:
         str: Path where the image was saved.
     """
-    # Create the folder if it doesn't exist
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)
+    # Define the directory path based on the image label
+    label_dir = os.path.join(save_folder, str(label))
 
-    # Generate a unique image name based on item ID, date, and current timestamp
+    # Create the directory if it doesn't exist
+    if not os.path.exists(label_dir):
+        os.makedirs(label_dir)
+
+    # Generate a unique image name based on item ID, label, date, and current timestamp
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-    img_name = f"{item_details['id']}_{timestamp}.png"
-    img_path = os.path.join(save_folder, img_name)
+    img_name = f"{item_details['id']}_label{label}_{timestamp}.png"
+    img_path = os.path.join(label_dir, img_name)
 
     img.save(img_path, 'PNG')
 
     logger.info(f"Image saved at: {img_path}")
     return img_path
-
 
 def fetch_images_from_geojson(file_path, save_folder='saved_images'):
     """
@@ -150,7 +153,7 @@ def fetch_images_from_geojson(file_path, save_folder='saved_images'):
             asset_href, item_details = fetch_least_cloudy_image(geom)
             if asset_href and item_details:  # Check if values are not None
                 img = read_image_from_asset(asset_href, geom)
-                saved_path = save_image(img, item_details, save_folder=save_folder)
+                saved_path = save_image(img, item_details, label, save_folder=save_folder)
                 saved_paths.append(saved_path)
             else:
                 logger.warning(f"No suitable image found for AOI with label: {label}")
@@ -163,22 +166,7 @@ def fetch_images_from_geojson(file_path, save_folder='saved_images'):
 
 
 if __name__ == "__main__":
-    # AREA_OF_INTEREST = {
-    #     "type": "Polygon",
-    #     "coordinates": [
-    #         [
-    #             [-148.56536865234375, 60.80072385643073],
-    #             [-147.44338989257812, 60.80072385643073],
-    #             [-147.44338989257812, 61.18363894915102],
-    #             [-148.56536865234375, 61.18363894915102],
-    #             [-148.56536865234375, 60.80072385643073],
-    #         ]
-    #     ],
-    # }
-    #
-    # asset_href, item_details = fetch_least_cloudy_image(AREA_OF_INTEREST)
-    # img = read_image_from_asset(asset_href, AREA_OF_INTEREST)
-    # save_image(img, item_details)
+
 
     train_images = fetch_images_from_geojson('raw_data/train.geojson', save_folder='train_images')
 
