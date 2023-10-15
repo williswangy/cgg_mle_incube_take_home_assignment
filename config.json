@@ -7,5 +7,14 @@
     "TEST_GEOJSON_PATH": "raw_data/test.geojson",
     "TRAIN_IMAGE_PATH": "train_images",
     "TEST_IMAGE_PATH": "test_images",
-    "SIZE": [256, 256]
+    "SIZE": [256, 256],
+    "MODEL": {
+        "LEARNING_RATE": 0.0001,
+        "LOSS": "binary_crossentropy",
+        "METRICS": ["accuracy"],
+        "EPOCHS": 15,
+        "BATCH_SIZE": 32,
+        "SAVE_PATH": "models/vgg16_binary_classification.h5"
+    }
+
 }
