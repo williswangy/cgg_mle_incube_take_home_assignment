@@ -6,7 +6,7 @@ from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.optimizers import Adam
-from ImagePreprocessor import load_all_data
+from ImagePreprocessor import load_train_val_data
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -20,10 +20,10 @@ def build_model(input_shape):
     Builds a binary classification model based on the VGG16 architecture.
 
     Args:
-        input_shape (tuple): The shape of the input tensor.
+        - input_shape (tuple): The shape of the input tensor.
 
     Returns:
-        Model: A TensorFlow Keras model with VGG16 base and additional custom layers.
+        - Model: A TensorFlow Keras model with VGG16 base and additional custom layers.
     """
     # Load the VGG16 model with weights pre-trained on ImageNet
     base_model = VGG16(weights='imagenet', include_top=False, input_shape=input_shape)
@@ -47,8 +47,8 @@ def save_model(model, filepath):
     Save the trained model to disk using TensorFlow's save method.
 
     Args:
-        model (Model): The TensorFlow Keras model to save.
-        filepath (str): The path where the model should be saved.
+        - model (Model): The TensorFlow Keras model to save.
+        - filepath (str): The path where the model should be saved.
     """
     logging.info(f"Saving model to {filepath}")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # Load the data
     logger.info("Loading data...")
-    X_train, X_val, y_train, y_val, _, _ = load_all_data()
+    X_train, X_val, y_train, y_val = load_train_val_data()
 
     # Convert lists to numpy arrays
     X_train = np.array(X_train)
@@ -89,6 +89,6 @@ if __name__ == "__main__":
     )
 
     # Save the model
-    save_model(model, config['MODEL']['SAVE_PATH'])
+    save_model(model, config['MODEL']['SAVE_MODEL'])
 
     logger.info("Training completed.")
