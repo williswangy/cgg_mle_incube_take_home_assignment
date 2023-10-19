@@ -69,3 +69,60 @@ The `latestscores.txt` file stores metrics results from model evaluation, includ
 This file represents a saved trained model using the VGG16 architecture. Saved models like these are valuable for quicker prediction on new data without the need for retraining. The model can be loaded and used to make predictions on satellite images efficiently.
 
 These files in the production folder are essential for tracking and managing the machine learning workflow's progress and performance, ensuring that the model is up to date and ready for deployment.
+
+
+Certainly! Here's a proposal for monitoring the machine learning model in production:
+
+## Monitoring Machine Learning Model To Do List
+
+
+### Monitoring Components
+
+1. **Data Ingestion Monitoring**
+   - Continuously monitor the data ingestion process.
+   - Use the `ingestedfiles.txt` file to keep track of the files that have been ingested into the system.
+   - Implement a mechanism to detect new data files as they arrive. This can be done by comparing the list of ingested files with the list of incoming files.
+
+2. **Model Performance Monitoring**
+   - Regularly assess the model's performance on the test dataset.
+   - Compare the latest evaluation metrics (e.g., accuracy, F1 score) with predefined thresholds or historical performance.
+   - If the model's performance falls significantly below acceptable levels, trigger an alert.
+
+3. **Automatic Retraining**
+   - Set up an automated process to retrain the model when needed.
+   - Define conditions for retraining, such as a significant drop in performance or a scheduled interval.
+   - When retraining is triggered, use the existing data and new data files to update the model.
+   - Save the retrained model as `vgg16_model` for future predictions.
+
+4. **Deployment Update**
+   - After retraining, redeploy the updated model to the Flask application (`app.py`) to ensure that predictions are based on the latest model.
+   - Update the API with the new model to make it available for incoming requests.
+
+5. **Logging and Alerts**
+   - Implement a logging system to record events, such as data ingestion, model evaluation, and retraining.
+   - Set up alerts or notifications to notify relevant stakeholders when specific events occur, such as model retraining or deployment updates.
+
+### Suggested Implementation Steps
+
+1. **Automate Data Ingestion Monitoring**:
+   - Implement a script that periodically checks for new data files based on timestamps or file hashes.
+   - Update the `ingestedfiles.txt` file with the list of ingested files.
+
+2. **Regular Model Evaluation**:
+   - Schedule regular model evaluation (e.g., daily or weekly).
+   - Calculate evaluation metrics on the test dataset and compare them with predefined thresholds.
+
+3. **Automatic Retraining**:
+   - Implement an automated retraining script that checks for conditions triggering retraining.
+   - Use the `ingestedfiles.txt` file to determine which data files are new.
+   - Retrain the model with the combination of existing and new data.
+   - Save the updated model as `vgg16_model`.
+
+4. **Deployment Update**:
+   - After successful retraining, update the Flask application (`app.py`) with the new model.
+   - Ensure a smooth transition by handling versioning or maintaining backward compatibility for API endpoints.
+
+5. **Logging and Alerts**:
+   - Set up a logging framework to record relevant events and actions.
+   - Configure alerting mechanisms (e.g., email notifications, monitoring systems) to notify stakeholders when significant events occur.
+
