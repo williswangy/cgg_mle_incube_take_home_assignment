@@ -22,6 +22,7 @@ TIME_OF_INTEREST = config['TIME_OF_INTEREST']
 TARGET_WIDTH = config['TARGET_WIDTH']
 TRAIN_GEOJSON_PATH = config['TRAIN_GEOJSON_PATH']
 TEST_GEOJSON_PATH = config['TEST_GEOJSON_PATH']
+ingested_files = []
 
 
 def fetch_least_cloudy_image(aoi, time_of_interest=TIME_OF_INTEREST):
@@ -125,6 +126,13 @@ def save_image(img, item_details, label, save_folder='saved_images'):
     img.save(img_path, 'PNG')
 
     logger.info(f"Image saved at: {img_path}")
+
+    # Update the ingested files list and save it to a text file
+    ingested_files.append(img_path)
+    output_folder_path = config['PRODUCTION']
+    with open(os.path.join(output_folder_path, 'ingestedfiles.txt'), "a") as file:  # Using 'a' to append to the file
+        file.write(f"Ingestion date: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
+        file.write(f"{img_path}\n")  # Write only the newly ingested file path
     return img_path
 
 

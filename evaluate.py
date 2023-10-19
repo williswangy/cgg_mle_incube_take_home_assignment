@@ -71,7 +71,7 @@ def score_model():
         f"{confusion[1][0]:8d} {confusion[1][1]:8d}\n"
     )
 
-    scorespath = os.path.join(config['SCORE_PATH'], 'latestscore.txt')
+    scorespath = os.path.join(config['PRODUCTION'], 'latestscore.txt')
     with open(scorespath, 'w') as f:
         f.write(metrics_str)
 
