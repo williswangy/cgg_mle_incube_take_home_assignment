@@ -54,3 +54,18 @@ Automates the interaction with a locally hosted Flask API by making sequential H
    This file will contain details of all the API requests and their corresponding responses, providing a record of the entire workflow.
 
 Please follow these steps to run the Flask app and document the process using the `api_responses.txt` file.
+
+
+
+## Production Folder Contents
+
+### `ingestedfiles.txt`
+This file contains information about the ingestion process of the train and test images. It likely includes details about which satellite images were fetched, resized, and used for training and testing datasets. It serves as a record of the data ingestion workflow.
+
+### `latestscores.txt`
+The `latestscores.txt` file stores metrics results from model evaluation, including accuracy, F1 score, and a confusion matrix. These metrics help assess the performance of the machine learning model on the test dataset. Reviewing this file provides insights into how well the model is performing on new, unseen data.
+
+### `vgg16_model`
+This file represents a saved trained model using the VGG16 architecture. Saved models like these are valuable for quicker prediction on new data without the need for retraining. The model can be loaded and used to make predictions on satellite images efficiently.
+
+These files in the production folder are essential for tracking and managing the machine learning workflow's progress and performance, ensuring that the model is up to date and ready for deployment.
