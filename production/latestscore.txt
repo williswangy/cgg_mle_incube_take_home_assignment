@@ -1,5 +1,5 @@
 Accuracy        - 0.5000
 F1 Score        - 0.5714
 Confusion Matrix:
-       1        2
-       1        2
+       5       10
+       5       10

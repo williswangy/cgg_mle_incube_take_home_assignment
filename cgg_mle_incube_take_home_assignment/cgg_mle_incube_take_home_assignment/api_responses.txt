@@ -1,0 +1,6 @@
+{
+    "TrainImages": "{\n  \"message\": \"Processed 20 images from train.geojson!\", \n  \"status\": \"success\"\n}\n",
+    "TestImages": "{\n  \"message\": \"Processed 6 images from test.geojson!\", \n  \"status\": \"success\"\n}\n",
+    "LoadData": "{\n  \"message\": \"Data loaded successfully!\", \n  \"status\": \"success\"\n}\n",
+    "PredictScore": "{\n  \"accuracy\": 0.5, \n  \"confusion_matrix\": [\n    [\n      5, \n      10\n    ], \n    [\n      5, \n      10\n    ]\n  ], \n  \"f1\": 0.5714285714285715, \n  \"status\": \"success\"\n}\n"
+}

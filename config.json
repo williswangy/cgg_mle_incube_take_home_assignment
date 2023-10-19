@@ -7,6 +7,7 @@
     "TEST_GEOJSON_PATH": "raw_data/test.geojson",
     "TRAIN_IMAGE_PATH": "train_images",
     "TEST_IMAGE_PATH": "test_images",
+    "BASE_PATH": "cgg_mle_incube_take_home_assignment",
     "PRODUCTION": "production",
     "SIZE": [256, 256],
     "MODEL": {

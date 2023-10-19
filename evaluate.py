@@ -36,7 +36,7 @@ def load_h5_model(model_path: str):
         raise
 
 
-def score_model():
+def score_model(base_path):
     """
     Loads a trained model, evaluates it on the test set, and saves evaluation metrics to a text file.
 
@@ -49,7 +49,7 @@ def score_model():
     model = load_h5_model(config['MODEL']['SAVE_MODEL'])
 
     # Load and preprocess test dataset
-    X_test, y_test = load_test_data()
+    X_test, y_test = load_test_data(base_path)
     X_test = np.array(X_test)
     y_test = np.array(y_test)
 
@@ -80,4 +80,4 @@ def score_model():
 
 
 if __name__ == "__main__":
-    score_model()
+    score_model(config['TEST_IMAGE_PATH'])

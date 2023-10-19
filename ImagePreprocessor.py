@@ -66,33 +66,39 @@ def get_dataset(base_path, size=SIZE):
     logging.info(f"Retrieved dataset from {base_path} with {len(images)} images in total.")
     return images, labels
 
-def load_train_val_data():
+def load_train_val_data(base_path):
     """
     Loads and splits the dataset into training and validation subsets.
+
+    Args:
+        base_path (str): The base path from which images are to be loaded.
 
     Returns:
         Tuple[List[np.array], List[np.array], List[int], List[int]]:
         Returns the training images, validation images, training labels, and validation labels.
     """
     logging.info("Starting data loading process for training and validation datasets...")
-    X, y = get_dataset(TRAIN_IMAGE_PATH)
+    X, y = get_dataset(base_path)
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
     logging.info(f"Training dataset split into {len(X_train)} training samples and {len(X_val)} validation samples.")
     return X_train, X_val, y_train, y_val
 
-def load_test_data():
+def load_test_data(base_path):
     """
     Loads the test dataset.
+
+    Args:
+        base_path (str): The base path from which images are to be loaded.
 
     Returns:
         Tuple[List[np.array], List[int]]: Returns the test images and their associated labels.
     """
     logging.info("Starting data loading process for test dataset...")
-    X_test, y_test = get_dataset(TEST_IMAGE_PATH)
+    X_test, y_test = get_dataset(base_path)
     logging.info(f"Loaded {len(X_test)} test samples.")
     return X_test, y_test
 
 
 if __name__ == "__main__":
-    X_train, X_val, y_train, y_val = load_train_val_data()
-    X_test, y_test = load_test_data()
+    X_train, X_val, y_train, y_val = load_train_val_data(TRAIN_IMAGE_PATH)
+    X_test, y_test = load_test_data(TEST_IMAGE_PATH)
