@@ -71,8 +71,6 @@ This file represents a saved trained model using the VGG16 architecture. Saved m
 These files in the production folder are essential for tracking and managing the machine learning workflow's progress and performance, ensuring that the model is up to date and ready for deployment.
 
 
-Certainly! Here's a proposal for monitoring the machine learning model in production:
-
 ## Monitoring Machine Learning Model To Do List
 
 
